@@ -216,6 +216,10 @@ public class MainWindow extends JFrame {
 		JButton btnNewButton = new JButton("<<");
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				for (int i = 0; i < jlm_SelectedStudents.getSize(); i++) {
+					jlm_AllStudents.addElement(jlm_SelectedStudents.getElementAt(i));
+				}
+				jlm_SelectedStudents.removeAllElements();
 			}
 		});
 		GridBagConstraints gbc_btnNewButton = new GridBagConstraints();
@@ -253,7 +257,11 @@ public class MainWindow extends JFrame {
 		JButton btnNewButton_2 = new JButton(">>");
 		btnNewButton_2.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				
+				for (int i = 0; i < jlm_AllStudents.getSize(); i++) {
+					jlm_SelectedStudents.addElement(jlm_AllStudents.getElementAt(i));
+				}
+				jlm_AllStudents.removeAllElements();
+
 			}
 		});
 		GridBagConstraints gbc_btnNewButton_2 = new GridBagConstraints();
@@ -345,7 +353,7 @@ public class MainWindow extends JFrame {
 		
 	
 	/**
-	 * 
+	 * Add students to the JListModel
 	 */
 	private void addStudent () {
 		for (Estudiante estudiante : allStudentsList) {
@@ -356,11 +364,10 @@ public class MainWindow extends JFrame {
 	
 	
 	/**
-	 * 
+	 * Check all the students from the selected students list
 	 */
 	private void checkStudents() {
 		List<Estudiante> selectedStudents = new ArrayList<Estudiante>();
-		boolean studentExists = false;
 		Profesor prof = (Profesor) jcb_ProfessorChooser.getSelectedItem();
 		Materia mat = (Materia) jcb_MateriaChooser.getSelectedItem();
 		
@@ -371,26 +378,12 @@ public class MainWindow extends JFrame {
 		for (Estudiante estudiante : selectedStudents) {
 			Valoracionmateria vm = ValoracionMateriaController.findCalification(prof.getId(), mat.getId(), estudiante.getId());
 			
-			if(vm != null) studentExists = true;
-			else studentExists = false;
-			realizeInsertOrUpdate(studentExists, mat, prof, vm, estudiante);
-
+			if(vm != null) updateStudent(vm); 
+			else insertStudentValoration(vm, prof, mat, estudiante);
 			}
 
 		}
 		
-	}
-
-	/**
-	 * @param studentExists
-	 */
-	private void realizeInsertOrUpdate(boolean studentExists, Materia mat, Profesor prof, Valoracionmateria vm, Estudiante student) {
-		if (studentExists) {
-			updateStudent(vm); 
-		}
-		else {
-			insertStudentValoration(vm, prof, mat, student);
-		}
 	}
 	
 	
